@@ -738,6 +738,10 @@ video {
   margin-top: 0.5rem;
 }
 
+.mt-20 {
+  margin-top: 5rem;
+}
+
 .mt-\[10px\] {
   margin-top: 10px;
 }
@@ -748,10 +752,6 @@ video {
 
 .mt-\[20px\] {
   margin-top: 20px;
-}
-
-.mt-20 {
-  margin-top: 5rem;
 }
 
 .line-clamp-1 {
@@ -1117,13 +1117,11 @@ video {
   filter: var(--tw-blur) var(--tw-brightness) var(--tw-contrast) var(--tw-grayscale) var(--tw-hue-rotate) var(--tw-invert) var(--tw-saturate) var(--tw-sepia) var(--tw-drop-shadow);
 }
 
-/* Hide scrollbar for Chrome, Safari, and Opera */
+@tailwind utilities;
 
 .no-scrollbar::-webkit-scrollbar {
   display: none;
 }
-
-/* Hide scrollbar for IE, Edge, and Firefox */
 
 .no-scrollbar {
   -ms-overflow-style: none;

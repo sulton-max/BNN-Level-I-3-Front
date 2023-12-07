@@ -1,0 +1,76 @@
+{
+  "format": 1,
+  "restore": {
+    "D:\\Projects\\Repositories\\Training\\Groups\\Bootcamp N10\\Classes\\BNN-Level-I-3-Front\\src\\N81\\AirBnbServerApp\\AirBnbServerApp\\AirBnb.ServerApp.Api\\AirBnb.ServerApp.Api.csproj": {}
+  },
+  "projects": {
+    "D:\\Projects\\Repositories\\Training\\Groups\\Bootcamp N10\\Classes\\BNN-Level-I-3-Front\\src\\N81\\AirBnbServerApp\\AirBnbServerApp\\AirBnb.ServerApp.Api\\AirBnb.ServerApp.Api.csproj": {
+      "version": "1.0.0",
+      "restore": {
+        "projectUniqueName": "D:\\Projects\\Repositories\\Training\\Groups\\Bootcamp N10\\Classes\\BNN-Level-I-3-Front\\src\\N81\\AirBnbServerApp\\AirBnbServerApp\\AirBnb.ServerApp.Api\\AirBnb.ServerApp.Api.csproj",
+        "projectName": "AirBnb.ServerApp.Api",
+        "projectPath": "D:\\Projects\\Repositories\\Training\\Groups\\Bootcamp N10\\Classes\\BNN-Level-I-3-Front\\src\\N81\\AirBnbServerApp\\AirBnbServerApp\\AirBnb.ServerApp.Api\\AirBnb.ServerApp.Api.csproj",
+        "packagesPath": "C:\\Users\\Max\\.nuget\\packages\\",
+        "outputPath": "D:\\Projects\\Repositories\\Training\\Groups\\Bootcamp N10\\Classes\\BNN-Level-I-3-Front\\src\\N81\\AirBnbServerApp\\AirBnbServerApp\\AirBnb.ServerApp.Api\\obj\\",
+        "projectStyle": "PackageReference",
+        "configFilePaths": [
+          "C:\\Users\\Max\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
+        ],
+        "originalTargetFrameworks": [
+          "net8.0"
+        ],
+        "sources": {
+          "https://api.nuget.org/v3/index.json": {},
+          "https://pkgs.dev.azure.com/glowfs/Samsung/_packaging/glow-origination/nuget/v3/index.json": {}
+        },
+        "frameworks": {
+          "net8.0": {
+            "targetAlias": "net8.0",
+            "projectReferences": {}
+          }
+        },
+        "warningProperties": {
+          "warnAsError": [
+            "NU1605"
+          ]
+        }
+      },
+      "frameworks": {
+        "net8.0": {
+          "targetAlias": "net8.0",
+          "dependencies": {
+            "Microsoft.AspNetCore.OpenApi": {
+              "target": "Package",
+              "version": "[8.0.0, )"
+            },
+            "Swashbuckle.AspNetCore": {
+              "target": "Package",
+              "version": "[6.4.0, )"
+            }
+          },
+          "imports": [
+            "net461",
+            "net462",
+            "net47",
+            "net471",
+            "net472",
+            "net48",
+            "net481"
+          ],
+          "assetTargetFallback": true,
+          "warn": true,
+          "frameworkReferences": {
+            "Microsoft.AspNetCore.App": {
+              "privateAssets": "none"
+            },
+            "Microsoft.NETCore.App": {
+              "privateAssets": "all"
+            }
+          },
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\8.0.100/PortableRuntimeIdentifierGraph.json"
+        }
+      }
+    }
+  }
+}

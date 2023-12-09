@@ -1,0 +1,38 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer components {
+
+    body {
+        @apply bg-bgColor dark:bg-bgColorDark;
+    }
+
+    h1, h2, h3, h4, h5, p, span {
+        @apply text-textColor dark:text-textColorDark;
+    }
+
+    /*.theme-bg {*/
+    /*    @apply bg-bgColor dark:bg-bgColorDark;*/
+    /*}*/
+    .theme-text {
+        @apply text-textColor dark:text-textColorDark;
+    }
+
+    .theme-icon {
+        @apply text-bgColorDark dark:text-bgColor;
+    }
+
+    .theme-border {
+        @apply border-borderColor dark:border-borderColorDark;
+    }
+
+    .simple-hover {
+        @apply opacity-0 group-hover:opacity-100 transition-opacity duration-300;
+    }
+
+    .input {
+        @apply block mt-1 w-full px-3 py-2 rounded-lg text-sm placeholder-slate-400 placeholder-opacity-60 bg-transparent;
+    }
+
+}

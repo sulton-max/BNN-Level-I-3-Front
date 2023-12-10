@@ -34,5 +34,19 @@
     .input {
         @apply block mt-1 w-full px-3 py-2 rounded-lg text-sm placeholder-slate-400 placeholder-opacity-60 bg-transparent;
     }
+}
 
+@layer utilities {
+    @variants responsive {
+        /* Hide scrollbar for Chrome, Safari, and Opera */
+        .no-scrollbar::-webkit-scrollbar {
+            display: none;
+        }
+
+        /* Hide scrollbar for IE, Edge, and Firefox */
+        .no-scrollbar {
+            -ms-overflow-style: none; /* IE and Edge */
+            scrollbar-width: none; /* Firefox */
+        }
+    }
 }

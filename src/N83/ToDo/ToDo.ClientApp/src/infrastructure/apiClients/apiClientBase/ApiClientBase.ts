@@ -1,6 +1,8 @@
 import type { AxiosError, AxiosInstance, AxiosRequestConfig, AxiosResponse } from "axios";
 import axios from "axios";
 import { ApiResponse } from "@/infrastructure/apiClients/apiClientBase/ApiResponse";
+import type { ProblemDetails } from "@/infrastructure/apiClients/apiClientBase/ProblemDetails";
+import { ClientInterceptors } from "@/infrastructure/apiClients/apiClientBase/ClientInterceptors";
 
 export default class ApiClientBase {
     public readonly client: AxiosInstance;
@@ -8,19 +10,8 @@ export default class ApiClientBase {
     constructor(config: AxiosRequestConfig) {
         this.client = axios.create(config);
 
-        this.client.interceptors.response.use(<TResponse>(response: AxiosResponse<TResponse>) => {
-            return {
-                    ...response,
-                    data: new ApiResponse(response.data as TResponse, null, response.status)
-                }
-            },
-            (error: AxiosError) => {
-                return {
-                    ...error,
-                    data: new ApiResponse(null, error.response?.data as ProblemDetails, error.response?.status ?? 500)
-                };
-            }
-        );
+        // register interceptors
+        ClientInterceptors.registerResponseConverter(this.client);
     }
 
     public async getAsync<T>(url: string, config?: AxiosRequestConfig): Promise<ApiResponse<T>> {

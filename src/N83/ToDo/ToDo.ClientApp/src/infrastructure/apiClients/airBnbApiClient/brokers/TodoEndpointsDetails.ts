@@ -1,5 +1,6 @@
 import ApiClientBase from "@/infrastructure/apiClients/apiClientBase/ApiClientBase";
-import { ToDo } from "@/modules/todos/models/ToDo";
+import { ToDoItem } from "@/modules/todos/models/ToDoItem";
+import type { Guid } from "guid-typescript";
 
 export class TodoEndpointsDetails {
     private client: ApiClientBase;
@@ -9,22 +10,22 @@ export class TodoEndpointsDetails {
     }
 
     public async getAsync() {
-        return await this.client.getAsync<Array<ToDo>>("api/todos");
+        return await this.client.getAsync<Array<ToDoItem>>("api/todos");
     }
 
-    public async getByIdAsync(id: string) {
-        return await this.client.getAsync<Array<ToDo>>(`api/todos/${id}`);
+    public async getByIdAsync(id: Guid) {
+        return await this.client.getAsync<ToDoItem>(`api/todos/${id}`);
     }
 
-    public async createAsync(todo: ToDo) {
-        return await this.client.getAsync<Array<ToDo>>("api/todos", todo);
+    public async createAsync(todo: ToDoItem) {
+        return await this.client.postAsync<ToDoItem>("api/todos", todo);
     }
 
-    public async updateAsync(todo: ToDo) {
-        return await this.client.getAsync<Array<ToDo>>("api/todos", todo);
+    public async updateAsync(todo: ToDoItem) {
+        return await this.client.putAsync<ToDoItem>("api/todos", todo);
     }
 
-    public async deleteAsync(id: string) {
-        return await this.client.getAsync<Array<ToDo>>(`api/todos/${id}`);
+    public async deleteByIdAsync(id: Guid) {
+        return await this.client.deleteAsync<ToDoItem>(`api/todos/${id}`);
     }
 }

@@ -36,7 +36,8 @@ public class TodoRepository : EntityRepositoryBase<TodoItem, AppDbContext>, ITod
                 .SetProperty(x => x.IsDone, todoItem.IsDone)
                 .SetProperty(x => x.IsFavorite, todoItem.IsFavorite)
                 .SetProperty(x => x.DueTime, todoItem.DueTime)
-                .SetProperty(x => x.ReminderTime, todoItem.ReminderTime),
+                .SetProperty(x => x.ReminderTime, todoItem.ReminderTime)
+                .SetProperty(x => x.ModifiedTime, DateTimeOffset.UtcNow),
             cancellationToken
         );
         return result > 0;

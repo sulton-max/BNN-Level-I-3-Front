@@ -5,7 +5,7 @@ namespace ToDo.Application.Todos.Services;
 
 public interface ITodoService
 {
-    IQueryable<TodoItem> Get(Expression<Func<TodoItem, bool>>? predicate = default, bool asNoTracking = false);
+    ValueTask<IList<TodoItem>> GetAsync(bool asNoTracking = false);
 
     ValueTask<TodoItem?> GetByIdAsync(Guid todoId, bool asNoTracking = false, CancellationToken cancellationToken = default);
 

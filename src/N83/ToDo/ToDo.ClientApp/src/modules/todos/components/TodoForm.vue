@@ -18,7 +18,7 @@ import { TodoApiClient } from "@/infrastructure/apiClients/airBnbApiClient/broke
 
 const todoApiClient = new TodoApiClient();
 
-const emits = defineEmits<{
+const emit = defineEmits<{
     addNewTodo: [todo: ToDoItem]
 }>();
 
@@ -56,7 +56,7 @@ const createTodoAsync = async () => {
     const response = await todoApiClient.todos.createAsync(todo.value);
 
     if (response.isSuccess)
-        emits("addNewTodo", response.response!)
+        emit("addNewTodo", response.response!)
 
     return response.isSuccess;
 }

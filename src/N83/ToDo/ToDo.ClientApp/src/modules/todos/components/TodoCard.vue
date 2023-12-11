@@ -4,30 +4,29 @@
 
         <!-- Primary Actions -->
         <div class="flex items-center">
-
             <button class="h-8 w-8 group border theme-border flex justify-center items-center rounded-full"
-                    @click="toggleIsDone">
-                <i class="simple-hover fa-solid fa-check theme-icon"
-                   :class="{ 'text-successColor opacity-100': todo.isDone, 'text-failedColor': !todo.isDone && (todo.dueTime < Date.now()), }"></i>
+                    @click="toggleIsDone" :disabled="isOverdue">
+                <i v-if="todo.isDone || (!todo.isDone && !isOverdue)" class="simple-hover fa-solid fa-check theme-icon"
+                   :class="{ 'text-successColor opacity-100': todo.isDone }"/>
+                <i v-if="!todo.isDone && isOverdue"
+                   class="fa-solid fa-xmark text-textSecondaryColor"/>
             </button>
-
         </div>
 
         <!-- Details -->
         <div class="flex-grow">
-
-            <!-- TODO : truncate -->
             <h5 class="font-bold line-clamp-1">{{ todo.title }}</h5>
-            <div class="flex gap-2 text-sm" >
+            <div class="flex gap-2 text-sm">
                 <p class="opacity-80" :class="{ 'text-red-500': isOverdue }">
-                    <i class="fa-regular fa-calendar theme-icon mr-1"></i>
-                    {{ DateFormatter.formatHumanize(todo.dueTime) }}</p>
-                <span class="opacity-50">•</span>
+                    <i class="fa-regular fa-calendar theme-icon mr-1" :class="{ 'text-red-500': isOverdue }"/>
+                    {{ DateFormatter.formatHumanize(todo.dueTime) }}
+                </p>
+                <span class="opacity-40">•</span>
                 <p class="opacity-40">
                     <i class="fa-regular fa-bell theme-icon mr-1"></i>
-                    {{ DateFormatter.formatHumanize(todo.reminderTime) }}</p>
+                    {{ DateFormatter.formatHumanize(todo.reminderTime) }}
+                </p>
             </div>
-
         </div>
 
         <!-- Secondary Actions -->
@@ -62,7 +61,6 @@ import { DateFormatter } from "@/infrastructure/services/DateFormatter";
 import { TodoApiClient } from "@/infrastructure/apiClients/airBnbApiClient/brokers/TodoApiClient";
 import { Utils } from "@/infrastructure/extensions/ObjectExtensions";
 import type { Guid } from "guid-typescript";
-// import _ from "lodash";
 
 const todoApiClient = new TodoApiClient();
 
@@ -72,11 +70,6 @@ const props = defineProps({
         required: true
     }
 });
-
-console.log(new Date(props.todo.dueTime));
-console.log(new Date());
-
-console.log('test', );
 
 const emit = defineEmits<{
     editTodo: [id: Guid],

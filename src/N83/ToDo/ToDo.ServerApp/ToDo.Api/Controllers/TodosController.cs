@@ -14,7 +14,7 @@ public class TodosController(ITodoService todoService, IMapper mapper) : Control
     [HttpGet]
     public async ValueTask<IActionResult> Get()
     {
-        var result = await todoService.Get().OrderBy(todo => todo.Id).ToListAsync();
+        var result = await todoService.GetAsync();
         return result.Any() ? Ok(mapper.Map<IEnumerable<TodoDto>>(result)) : NoContent();
     }
 

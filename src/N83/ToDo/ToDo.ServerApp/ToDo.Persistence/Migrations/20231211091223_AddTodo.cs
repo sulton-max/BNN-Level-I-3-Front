@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace ToDo.Persistence.Migrations
 {
     /// <inheritdoc />
-    public partial class AddToDo : Migration
+    public partial class AddTodo : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -17,7 +17,6 @@ namespace ToDo.Persistence.Migrations
                 {
                     Id = table.Column<Guid>(type: "uuid", nullable: false),
                     Title = table.Column<string>(type: "character varying(128)", maxLength: 128, nullable: false),
-                    Notes = table.Column<string>(type: "character varying(1024)", maxLength: 1024, nullable: true),
                     IsDone = table.Column<bool>(type: "boolean", nullable: false),
                     IsFavorite = table.Column<bool>(type: "boolean", nullable: false),
                     DueTime = table.Column<DateTimeOffset>(type: "timestamp with time zone", nullable: false),

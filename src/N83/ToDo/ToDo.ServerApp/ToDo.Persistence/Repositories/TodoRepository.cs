@@ -1,4 +1,5 @@
 ﻿using System.Linq.Expressions;
+using Microsoft.EntityFrameworkCore;
 using ToDo.Domain.Entities;
 using ToDo.Persistence.DataContexts;
 using ToDo.Persistence.Repositories.Interfaces;
@@ -26,13 +27,24 @@ public class TodoRepository : EntityRepositoryBase<TodoItem, AppDbContext>, ITod
         return base.CreateAsync(todoItem, saveChanges, cancellationToken);
     }
 
-    public new ValueTask<TodoItem> UpdateAsync(TodoItem todoItem, bool saveChanges = true, CancellationToken cancellationToken = default)
+    public async ValueTask<bool> UpdateAsync(TodoItem todoItem, CancellationToken cancellationToken = default)
     {
-        return base.UpdateAsync(todoItem, saveChanges, cancellationToken);
+        var result = await DbContext.Todos
+            .Where(x => x.Id == todoItem.Id)
+            .ExecuteUpdateAsync(propertySetter => propertySetter
+                .SetProperty(x => x.Title, todoItem.Title)
+                .SetProperty(x => x.IsDone, todoItem.IsDone)
+                .SetProperty(x => x.IsFavorite, todoItem.IsFavorite)
+                .SetProperty(x => x.DueTime, todoItem.DueTime)
+                .SetProperty(x => x.ReminderTime, todoItem.ReminderTime),
+            cancellationToken
+        );
+        return result > 0;
     }
 
-    public new ValueTask<TodoItem?> DeleteByIdAsync(Guid todoId, bool saveChanges = true, CancellationToken cancellationToken = default)
+    public async ValueTask<bool> DeleteByIdAsync(Guid todoId, CancellationToken cancellationToken = default)
     {
-        return base.DeleteByIdAsync(todoId, saveChanges, cancellationToken);
+        var result = await DbContext.Todos.Where(x => x.Id == todoId).ExecuteDeleteAsync(cancellationToken);
+        return result > 0;
     }
 }

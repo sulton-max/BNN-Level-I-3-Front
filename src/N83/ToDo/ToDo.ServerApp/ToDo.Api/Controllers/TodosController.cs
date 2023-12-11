@@ -1,5 +1,4 @@
 ﻿using AutoMapper;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using ToDo.Api.Dtos.Models;
@@ -15,7 +14,7 @@ public class TodosController(ITodoService todoService, IMapper mapper) : Control
     [HttpGet]
     public async ValueTask<IActionResult> Get()
     {
-        var result = await todoService.Get().ToListAsync();
+        var result = await todoService.Get().OrderBy(todo => todo.Id).ToListAsync();
         return result.Any() ? Ok(mapper.Map<IEnumerable<TodoDto>>(result)) : NoContent();
     }
 

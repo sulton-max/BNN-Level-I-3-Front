@@ -6,7 +6,7 @@ using ToDo.Persistence.Repositories.Interfaces;
 
 namespace ToDo.Infrastructure.Todos.Services;
 
-public class TodoService(ITodoRepository todoRepository, IValidator<TodoItem> todoValiator) : ITodoService
+public class TodoService(ITodoRepository todoRepository, IValidator<TodoItem> todoValidator) : ITodoService
 {
     public IQueryable<TodoItem> Get(Expression<Func<TodoItem, bool>>? predicate = default, bool asNoTracking = false)
     {
@@ -20,24 +20,24 @@ public class TodoService(ITodoRepository todoRepository, IValidator<TodoItem> to
 
     public ValueTask<TodoItem> CreateAsync(TodoItem todoItem, bool saveChanges = true, CancellationToken cancellationToken = default)
     {
-        var validationResult = todoValiator.Validate(todoItem);
+        var validationResult = todoValidator.Validate(todoItem);
         if (!validationResult.IsValid)
             throw new ValidationException(validationResult.Errors);
 
         return todoRepository.CreateAsync(todoItem, saveChanges, cancellationToken);
     }
 
-    public ValueTask<TodoItem> UpdateAsync(TodoItem todoItem, bool saveChanges = true, CancellationToken cancellationToken = default)
+    public ValueTask<bool> UpdateAsync(TodoItem todoItem, CancellationToken cancellationToken = default)
     {
-        var validationResult = todoValiator.Validate(todoItem);
+        var validationResult = todoValidator.Validate(todoItem);
         if (!validationResult.IsValid)
             throw new ValidationException(validationResult.Errors);
 
-        return todoRepository.UpdateAsync(todoItem, saveChanges, cancellationToken);
+        return todoRepository.UpdateAsync(todoItem, cancellationToken);
     }
 
-    public ValueTask<TodoItem?> DeleteByIdAsync(Guid todoId, bool saveChanges = true, CancellationToken cancellationToken = default)
+    public ValueTask<bool> DeleteByIdAsync(Guid todoId, CancellationToken cancellationToken = default)
     {
-        return todoRepository.DeleteByIdAsync(todoId, saveChanges, cancellationToken);
+        return todoRepository.DeleteByIdAsync(todoId, cancellationToken);
     }
 }

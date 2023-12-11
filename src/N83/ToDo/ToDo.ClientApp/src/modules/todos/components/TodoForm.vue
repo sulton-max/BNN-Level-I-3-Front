@@ -12,6 +12,7 @@
 <script lang="ts" setup>
 
 import { ref, watch, watchEffect } from "vue";
+import { Utils } from "@/infrastructure/extensions/ObjectExtensions";
 import { ToDoItem } from "@/modules/todos/models/ToDoItem";
 import { TodoApiClient } from "@/infrastructure/apiClients/airBnbApiClient/brokers/TodoApiClient";
 
@@ -64,22 +65,16 @@ const updateTodoAsync = async () => {
     const response = await todoApiClient.todos.updateAsync(todo.value);
 
     if (response.isSuccess)
-        updateTodoValues(response.response!);
+        Object.assign(props.editTodo, response.response!);
+        // updateTodoValues(response.response!);
 
     return response.isSuccess;
-}
-
-const updateTodoValues = (todo: ToDoItem) => {
-    props.editTodo!.title = todo.title;
-    props.editTodo!.notes = todo.title;
-    props.editTodo!.dueDateTime = todo.dueDateTime;
-    props.editTodo!.reminderTime = todo.reminderTime;
 }
 
 watch(() => props.editTodo, () => {
     if (props.editTodo) {
         isEditing.value = true;
-        todo.value = props.editTodo;
+        todo.value = Utils.deepClone(props.editTodo);
     }
 });
 

@@ -6,8 +6,6 @@ public class TodoItem : AuditableEntity
 {
     public string Title { get; set; } = default!;
 
-    public string? Notes { get; set; }
-
     public bool IsDone { get; set; }
 
     public bool IsFavorite { get; set; }

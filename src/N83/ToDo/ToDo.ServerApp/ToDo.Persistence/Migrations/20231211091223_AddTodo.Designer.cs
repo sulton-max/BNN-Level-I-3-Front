@@ -12,8 +12,8 @@ using ToDo.Persistence.DataContexts;
 namespace ToDo.Persistence.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20231209154346_AddToDo")]
-    partial class AddToDo
+    [Migration("20231211091223_AddTodo")]
+    partial class AddTodo
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -45,10 +45,6 @@ namespace ToDo.Persistence.Migrations
 
                     b.Property<DateTimeOffset?>("ModifiedTime")
                         .HasColumnType("timestamp with time zone");
-
-                    b.Property<string>("Notes")
-                        .HasMaxLength(1024)
-                        .HasColumnType("character varying(1024)");
 
                     b.Property<DateTimeOffset>("ReminderTime")
                         .HasColumnType("timestamp with time zone");

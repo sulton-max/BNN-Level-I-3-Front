@@ -34,6 +34,11 @@
     .input {
         @apply block mt-1 w-full px-3 py-2 rounded-lg text-sm placeholder-slate-400 placeholder-opacity-60 bg-transparent;
     }
+
+    .btn-hover {
+        @apply hover:opacity-60
+    }
+
 }
 
 @layer utilities {

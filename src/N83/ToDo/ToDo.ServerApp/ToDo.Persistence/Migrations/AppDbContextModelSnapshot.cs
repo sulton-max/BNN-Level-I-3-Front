@@ -43,10 +43,6 @@ namespace ToDo.Persistence.Migrations
                     b.Property<DateTimeOffset?>("ModifiedTime")
                         .HasColumnType("timestamp with time zone");
 
-                    b.Property<string>("Notes")
-                        .HasMaxLength(1024)
-                        .HasColumnType("character varying(1024)");
-
                     b.Property<DateTimeOffset>("ReminderTime")
                         .HasColumnType("timestamp with time zone");
 

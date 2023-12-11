@@ -15,7 +15,7 @@
 <script setup lang="ts">
 
 import TodoList from "@/modules/todos/components/TodoList.vue";
-import NewTodoForm from "@/modules/todos/components/NewTodoForm.vue";
+import NewTodoForm from "@/modules/todos/components/TodoForm.vue";
 import type { ToDoItem } from "@/modules/todos/models/ToDoItem";
 import { TodoApiClient } from "@/infrastructure/apiClients/airBnbApiClient/brokers/TodoApiClient";
 import { onBeforeMount, ref } from "vue";

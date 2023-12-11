@@ -41,7 +41,7 @@ public abstract class EntityRepositoryBase<TEntity, TContext> where TEntity : cl
         return await initialQuery.SingleOrDefaultAsync(entity => entity.Id == id, cancellationToken: cancellationToken);
     }
 
-    protected async ValueTask<IList<TEntity?>> GetByIdsAsync(
+    protected async ValueTask<IList<TEntity>> GetByIdsAsync(
         IEnumerable<Guid> ids,
         bool asNoTracking = false,
         CancellationToken cancellationToken = default

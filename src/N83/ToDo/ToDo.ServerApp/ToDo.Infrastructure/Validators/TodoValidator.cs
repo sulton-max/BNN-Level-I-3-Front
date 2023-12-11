@@ -14,7 +14,6 @@ public class TodoValidator : AbstractValidator<TodoItem>
             () =>
             {
                 RuleFor(todo => todo.Title).NotEmpty().MinimumLength(3).MaximumLength(128);
-                RuleFor(todo => todo.Notes).MinimumLength(3).MaximumLength(1024).When(todo => !string.IsNullOrEmpty(todo.Notes));
                 RuleFor(todo => todo.IsDone).Equal(false);
                 RuleFor(todo => todo.IsFavorite).Equal(false);
                 RuleFor(todo => todo.DueTime).GreaterThan(DateTimeOffset.Now);
@@ -27,7 +26,6 @@ public class TodoValidator : AbstractValidator<TodoItem>
             () =>
             {
                 RuleFor(todo => todo.Title).NotEmpty().MinimumLength(3).MaximumLength(128);
-                RuleFor(todo => todo.Notes).MinimumLength(3).MaximumLength(1024).When(todo => !string.IsNullOrEmpty(todo.Notes));
                 RuleFor(todo => todo.DueTime).GreaterThan(DateTimeOffset.Now);
                 RuleFor(todo => todo.ReminderTime).GreaterThan(DateTimeOffset.Now);
             }

@@ -61,6 +61,7 @@ import { ToDoItem } from "@/modules/todos/models/ToDoItem";
 import { DateFormatter } from "@/infrastructure/services/DateFormatter";
 import { TodoApiClient } from "@/infrastructure/apiClients/airBnbApiClient/brokers/TodoApiClient";
 import type { Guid } from "guid-typescript";
+import _ from "lodash";
 
 const todoApiClient = new TodoApiClient();
 
@@ -76,8 +77,13 @@ const emit = defineEmits<{
     deleteTodo: [id: Guid]
 }>();
 
-const toggleIsDone = () => {
-    todo.value.isDone = !todo.value.isDone;
+const toggleIsDone = async () => {
+    const clonedTodo = _.cloneDeep(props.todo);
+    clonedTodo.isDone = !clonedTodo.isDone;
+
+    const response = await todoApiClient.todos.updateAsync(clonedTodo);
+    if(response.isSuccess)
+        Object.assign(props.todo, clonedTodo);
 }
 
 const toggleIsFavorite = () => {

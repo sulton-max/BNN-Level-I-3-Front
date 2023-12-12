@@ -1,8 +1,9 @@
 <template>
     <div
-        @focusout="console.log('focusout')"
-        class="w-[500px] theme-bg flex-col gap-y-4 justify-between border-2 border-gray-200 rounded-lg p-10 cursor-auto"
-        :class="show ? 'block' : 'hidden'">
+        tabindex="0" ref="container"
+        @focusout="onClose"
+        class="w-[500px] theme-bg flex-col gap-y-4 justify-between border border-gray-500 rounded-xl p-10 cursor-auto"
+    >
 
         <!-- Current day -->
         <div class="flex items-center text-4xl theme-text">
@@ -16,7 +17,8 @@
                 <i class="fa-solid fa-angle-left"></i>
             </button>
             <p class="text-lg font-bold">{{ months[currentDate!.getMonth()] }}</p>
-            <button @click="nextMonth" class="theme-icon">
+            <button @click="nextMonth" class="theme-icon" :disabled="nextMonthDisabled"
+                    :class="{'text-gray-500': nextMonthDisabled}">
                 <i class="fa-solid fa-angle-right"></i>
             </button>
         </div>
@@ -34,9 +36,11 @@
 
             <!-- Days in month -->
             <button
+                ref="dayRefs"
                 type="button"
                 @click="currentDate = day"
                 v-for="(day, index) in daysInCurrentMonth"
+                :data-date-picker-date="day.toString()"
                 :key="index"
                 :class="{'text-gray-500 hover:bg-opacity-10': dateDisabled(day), 'bg-opacity-80': compareDates(day, currentDate) == 0}"
                 :disabled="dateDisabled(day)"
@@ -54,7 +58,7 @@
 
 <script setup lang="ts">
 
-import { computed, ref } from "vue";
+import { computed, nextTick, onBeforeMount, ref, watch } from "vue";
 
 const props = defineProps({
     modelValue: {
@@ -65,21 +69,22 @@ const props = defineProps({
         type: Date,
         required: false
     },
-    show: {
-        type: Boolean,
-        required: false,
-        default: false
+    maxDate: {
+        type: Date,
+        required: false
     }
 });
 
-const emit = defineEmits(['update:modelValue', 'onClose']);
+const container = ref<HTMLElement>();
 
-const dateSelected = (date: Date) => {
-    currentDate.value = date;
-}
+const emit = defineEmits(['update:modelValue', 'onClose']);
 
 const weekDayNames = ["S", "M", "T", "W", "T", "F", "S"];
 const months = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
+
+onBeforeMount(async () => {
+    await nextTick(() => container.value?.focus());
+});
 
 const currentDate = computed({
     get() {
@@ -90,7 +95,9 @@ const currentDate = computed({
     }
 });
 
-// ref<Date>(new Date());
+const onClose = () => {
+    setTimeout(() => emit('onClose'), 100);
+}
 
 const daysInCurrentMonth = computed(() => {
     const year = currentDate.value.getFullYear();
@@ -117,7 +124,9 @@ const formattedDate = computed(() => {
     return `${dayShort}, ${monthShort} ${day}`;
 });
 
-const dateDisabled = (date: Date) => props.minDate && compareDates(date, props.minDate) === -1;
+const dateDisabled = (date: Date) =>
+    (props.minDate && (compareDates(date, props.minDate) === -1)
+    || (props.maxDate && compareDates(date, props.maxDate) === 1));
 
 const compareDates = (date1: Date, date2: Date): -1 | 0 | 1 => {
     const d1 = new Date(date1.getFullYear(), date1.getMonth(), date1.getDate());
@@ -132,9 +141,9 @@ const compareDates = (date1: Date, date2: Date): -1 | 0 | 1 => {
     }
 }
 
-// const getDateWithoutHours = (date: Date) => new Date(date.getFullYear(), date.getMonth(), date.getDate());
-
 const prevMonthDisabled = computed(() => props.minDate && (currentDate.value.getMonth() === props.minDate.getMonth() && currentDate.value.getFullYear() === props.minDate.getFullYear()));
+
+const nextMonthDisabled = computed(() => props.maxDate && (currentDate.value.getMonth() === props.maxDate.getMonth() && currentDate.value.getFullYear() === props.maxDate.getFullYear()));
 
 const nextMonth = () => currentDate.value = new Date(currentDate.value.getFullYear(), currentDate.value.getMonth() + 1, currentDate.value.getDate());
 

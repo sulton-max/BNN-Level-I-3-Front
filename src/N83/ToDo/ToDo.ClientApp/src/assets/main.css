@@ -12,9 +12,10 @@
         @apply text-textColor dark:text-textColorDark;
     }
 
-    /*.theme-bg {*/
-    /*    @apply bg-bgColor dark:bg-bgColorDark;*/
-    /*}*/
+    .theme-bg {
+        @apply bg-bgColor dark:bg-bgColorDark;
+    }
+
     .theme-text {
         @apply text-textColor dark:text-textColorDark;
     }

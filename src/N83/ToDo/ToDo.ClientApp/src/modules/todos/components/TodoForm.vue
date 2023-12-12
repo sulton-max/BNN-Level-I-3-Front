@@ -3,7 +3,7 @@
     <div class="h-20 gap-x-4 w-full border border-gray-500 rounded-xl p-4 flex items-center">
 
 
-        <v-form @submit.prevent="submitAsync" class="w-full flex">
+        <form @submit.prevent="submitAsync" class="w-full flex relative">
             <div class="flex-grow">
                 <input type="text" placeholder="Add task" v-model="todo.title"
                        class="input text-lg focus:outline-none focus:border-sky-500 contrast-less:border-slate-300 text-slate-300">
@@ -11,22 +11,26 @@
             <div class="flex gap-x-4">
 
                 <!-- Due time picker -->
-                <button class="text-2xl flex items-center justify-center relative" @click="toggleDueTimePicker">
+                <date-time-picker autofocus @onClose="showDueTimePicker = !showDueTimePicker" :min-date="minDate" class="z-20 absolute bottom-0 right-0"
+                                  :show="showDueTimePicker"
+                                  v-model="todo.dueTime"/>
+                <button type="button" class="text-2xl flex items-center justify-center relative" @click="toggleDueTimePicker">
                     <i class="fa-regular btn-hover fa-calendar theme-icon mr-1"/>
-                    <v-date-picker v-if="showDueTimePicker" v-model="todo.dueTime" class="z-20 absolute"/>
                 </button>
 
                 <!-- Reminder time picker -->
-                <button class="text-2xl flex items-center justify-center relative" @click="toggleReminderTimePicker">
+                <date-time-picker type="button" :min-date="minDate" class="z-20 absolute bottom-0 right-0"
+                                  :show="showReminderTimePicker"
+                                  v-model="todo.reminderTime"/>
+                <button type="button" class="text-2xl flex items-center justify-center relative" @click="toggleReminderTimePicker">
                     <i class="fa-regular btn-hover fa-bell theme-icon mr-1"></i>
-                    <v-date-picker v-if="showReminderTimePicker" v-model="todo.reminderTime" class="z-20 absolute"/>
                 </button>
 
                 <button type="submit">Submit</button>
 
             </div>
 
-        </v-form>
+        </form>
     </div>
 
 </template>
@@ -38,6 +42,10 @@ import { Utils } from "@/infrastructure/extensions/ObjectExtensions";
 import { ToDoItem } from "@/modules/todos/models/ToDoItem";
 import { TodoApiClient } from "@/infrastructure/apiClients/airBnbApiClient/brokers/TodoApiClient";
 import { useDate } from "vuetify";
+import DateTimePicker from "@/common/components/DateTimePicker.vue";
+
+
+const minDate = new Date();
 
 const adapter = useDate();
 const todoApiClient = new TodoApiClient();
@@ -75,6 +83,8 @@ const submitAsync = async () => {
 
 const resetForm = () => {
     todo.value = new ToDoItem();
+    todo.value.dueTime = new Date();
+    todo.value.reminderTime = new Date();
 }
 
 const createTodoAsync = async () => {
@@ -91,8 +101,7 @@ const createTodoAsync = async () => {
 const updateTodoAsync = async () => {
     const response = await todoApiClient.todos.updateAsync(todo.value);
 
-    if (response.isSuccess)
-    {
+    if (response.isSuccess) {
         Object.assign(props.editTodo!, todo.value!);
     }
 

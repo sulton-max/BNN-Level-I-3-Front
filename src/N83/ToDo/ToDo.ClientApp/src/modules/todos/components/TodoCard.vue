@@ -1,6 +1,6 @@
 <template>
 
-    <div class="h-20 flex gap-x-4 w-full border border-gray-500 rounded-xl p-4 px-10">
+    <div class="h-20 flex gap-x-4 w-full border border-gray-500 rounded-xl p-4 px-10 group">
 
         <!-- Primary Actions -->
         <div class="flex items-center">
@@ -30,7 +30,7 @@
         </div>
 
         <!-- Secondary Actions -->
-        <div class="flex items-center gap-x-4">
+        <div class="flex opacity-0 items-center gap-x-4 group-hover:opacity-100 transition-opacity duration-200">
 
             <!-- Favorite button -->
             <button class="text-2xl btn-hover" @click="toggleIsFavorite">

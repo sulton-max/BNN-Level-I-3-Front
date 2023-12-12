@@ -1,4 +1,5 @@
 export default {
+    // prefix: 'tw-',
     content: [
         "./index.html",
         "./src/**/*.{vue,js,ts,jsx,tsx}",
@@ -11,7 +12,7 @@ export default {
                 textColor: '#000000',
                 textSecondaryColor: '#718096',
                 textColorDark: '#c2c6d0',
-                borderColor: '#4A5568',
+                borderColor: '#E2E8F0',
                 borderColorDark: '#4A5568',
                 successColor: '#48BB78',
                 failedColor: '#F56565',

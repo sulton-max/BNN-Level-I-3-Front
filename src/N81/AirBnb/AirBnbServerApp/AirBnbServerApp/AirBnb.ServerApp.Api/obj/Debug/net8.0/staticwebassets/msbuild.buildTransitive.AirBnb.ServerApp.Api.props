@@ -1,3 +1,0 @@
-﻿<Project>
-  <Import Project="..\buildMultiTargeting\AirBnb.ServerApp.Api.props" />
-</Project>

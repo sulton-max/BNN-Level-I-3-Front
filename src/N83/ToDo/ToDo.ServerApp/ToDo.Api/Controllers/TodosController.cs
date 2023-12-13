@@ -1,6 +1,5 @@
 ﻿using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 using ToDo.Api.Dtos.Models;
 using ToDo.Application.Todos.Services;
 using ToDo.Domain.Entities;

@@ -2,7 +2,7 @@
     <div
         tabindex="0" ref="container"
         @focusout="onClose"
-        class="w-[500px] theme-bg flex-col gap-y-4 justify-between border border-gray-500 rounded-xl p-10 cursor-auto"
+        class="h-[550px] theme-bg flex-col gap-y-4 items-center justify-between border border-gray-500 rounded-xl p-10 cursor-auto"
     >
 
         <!-- Current day -->
@@ -12,12 +12,12 @@
 
         <!--Month selector-->
         <div class="flex items-center justify-between p-2">
-            <button @click="prevMonth" class="theme-icon" :disabled="prevMonthDisabled"
+            <button type="button" @click="prevMonth" class="theme-icon" :disabled="prevMonthDisabled"
                     :class="{'text-gray-500': prevMonthDisabled}">
                 <i class="fa-solid fa-angle-left"></i>
             </button>
             <p class="text-lg font-bold">{{ months[currentDate!.getMonth()] }}</p>
-            <button @click="nextMonth" class="theme-icon" :disabled="nextMonthDisabled"
+            <button type="button" @click="nextMonth" class="theme-icon" :disabled="nextMonthDisabled"
                     :class="{'text-gray-500': nextMonthDisabled}">
                 <i class="fa-solid fa-angle-right"></i>
             </button>
@@ -36,11 +36,9 @@
 
             <!-- Days in month -->
             <button
-                ref="dayRefs"
                 type="button"
-                @click="currentDate = day"
                 v-for="(day, index) in daysInCurrentMonth"
-                :data-date-picker-date="day.toString()"
+                @click="currentDate = day"
                 :key="index"
                 :class="{'text-gray-500 hover:bg-opacity-10': dateDisabled(day), 'bg-opacity-80': compareDates(day, currentDate) == 0}"
                 :disabled="dateDisabled(day)"
@@ -58,7 +56,7 @@
 
 <script setup lang="ts">
 
-import { computed, nextTick, onBeforeMount, ref, watch } from "vue";
+import { computed, nextTick, onBeforeMount, onMounted, ref, watch } from "vue";
 
 const props = defineProps({
     modelValue: {
@@ -82,8 +80,10 @@ const emit = defineEmits(['update:modelValue', 'onClose']);
 const weekDayNames = ["S", "M", "T", "W", "T", "F", "S"];
 const months = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
 
-onBeforeMount(async () => {
-    await nextTick(() => container.value?.focus());
+onMounted(async () => {
+    await nextTick(() => {
+        container.value?.focus();
+    });
 });
 
 const currentDate = computed({
@@ -96,7 +96,11 @@ const currentDate = computed({
 });
 
 const onClose = () => {
-    setTimeout(() => emit('onClose'), 100);
+    setTimeout(() => {
+        const innerElementFocused = container.value!.contains(document.activeElement);
+        if (!innerElementFocused)
+            emit('onClose');
+    }, 100);
 }
 
 const daysInCurrentMonth = computed(() => {
@@ -121,12 +125,14 @@ const formattedDate = computed(() => {
     const dayShort = currentDate.value.toLocaleString("en-US", {weekday: 'short'});
     const monthShort = currentDate.value.toLocaleString("en-US", {month: 'short'});
     const day = currentDate.value.toLocaleString("en-US", {day: '2-digit'});
-    return `${dayShort}, ${monthShort} ${day}`;
+    const year = currentDate.value.toLocaleString("en-US", {year: 'numeric'});
+
+    return `${dayShort}, ${monthShort} ${day}, ${year}`;
 });
 
 const dateDisabled = (date: Date) =>
     (props.minDate && (compareDates(date, props.minDate) === -1)
-    || (props.maxDate && compareDates(date, props.maxDate) === 1));
+        || (props.maxDate && compareDates(date, props.maxDate) === 1));
 
 const compareDates = (date1: Date, date2: Date): -1 | 0 | 1 => {
     const d1 = new Date(date1.getFullYear(), date1.getMonth(), date1.getDate());

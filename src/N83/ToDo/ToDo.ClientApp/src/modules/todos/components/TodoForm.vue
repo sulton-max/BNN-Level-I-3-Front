@@ -1,12 +1,14 @@
 <template>
 
     <div class="h-20 gap-x-4 w-full border border-gray-500 rounded-xl p-4 flex items-center">
+        <form @submit.prevent="submitAsync" class="w-full flex relative items-center justify-center">
 
-        <form @submit.prevent="submitAsync" class="w-full flex relative">
+            <!-- Title input -->
             <div class="flex-grow">
                 <input type="text" placeholder="Add task" v-model="todo.title"
                        class="input text-lg focus:outline-none focus:border-sky-500 contrast-less:border-slate-300 text-slate-300">
             </div>
+
             <div class="flex gap-x-4">
 
                 <!-- Due time picker -->
@@ -32,7 +34,11 @@
                     <i class="fa-regular btn-hover fa-bell theme-icon mr-1"></i>
                 </button>
 
-                <button type="submit">Submit</button>
+                <!-- Submit button -->
+                <button type="submit"
+                        class="w-7 h-7 btn-hover rounded-full bg-textSecondaryColor flex items-center justify-center">
+                    <i class="fa-solid fa-check"></i>
+                </button>
 
             </div>
 
@@ -49,8 +55,6 @@ import { ToDoItem } from "@/modules/todos/models/ToDoItem";
 import { TodoApiClient } from "@/infrastructure/apiClients/airBnbApiClient/brokers/TodoApiClient";
 import DateTimePicker from "@/common/components/DateTimePicker.vue";
 
-const minDate = new Date();
-
 const todoApiClient = new TodoApiClient();
 
 const emit = defineEmits<{
@@ -65,17 +69,23 @@ const props = defineProps({
     }
 });
 
-const isEditing = ref<boolean>(false);
+const minDate = new Date();
 const todo = ref<ToDoItem>(new ToDoItem());
+const isEditing = ref<boolean>(false);
 const showDueTimePicker = ref<boolean>(false);
 const showReminderTimePicker = ref<boolean>(false);
-const dueTimeButton = ref<HTMLElement>();
-const reminderTimeButton = ref<HTMLElement>();
+
+watch(() => props.editTodo, () => {
+    if (props.editTodo) {
+        isEditing.value = true;
+        todo.value = Utils.deepClone(props.editTodo);
+        todo.value.dueTime = new Date(props.editTodo.dueTime);
+        todo.value.reminderTime = new Date(props.editTodo.reminderTime);
+    }
+});
 
 const submitAsync = async () => {
     let result: boolean;
-
-    console.log('test todo', todo.value);
 
     if (isEditing.value) {
         result = await updateTodoAsync();
@@ -88,29 +98,21 @@ const submitAsync = async () => {
         resetForm();
 }
 
-const resetForm = () => {
-    todo.value = new ToDoItem();
-    todo.value.dueTime = new Date();
-    todo.value.reminderTime = new Date();
-}
+const resetForm = () => todo.value = new ToDoItem();
 
 const createTodoAsync = async () => {
     console.log(todo.value);
 
     const response = await todoApiClient.todos.createAsync(todo.value);
 
-    if (response.isSuccess)
-        emit("addNewTodo", response.response!)
+    if (response.isSuccess) emit("addNewTodo", response.response!)
 
     return response.isSuccess;
 }
 
 const updateTodoAsync = async () => {
     const response = await todoApiClient.todos.updateAsync(todo.value);
-
-    if (response.isSuccess) {
-        Object.assign(props.editTodo!, todo.value!);
-    }
+    if (response.isSuccess) Object.assign(props.editTodo!, todo.value!);
 
     return response.isSuccess;
 }
@@ -118,22 +120,11 @@ const updateTodoAsync = async () => {
 const toggleDueTimePicker = () => {
     showDueTimePicker.value = !showDueTimePicker.value;
     showReminderTimePicker.value = false;
-
-    dueTimeButton.value!.blur();
 }
 
 const toggleReminderTimePicker = () => {
     showReminderTimePicker.value = !showReminderTimePicker.value;
     showDueTimePicker.value = false;
 }
-
-watch(() => props.editTodo, () => {
-    if (props.editTodo) {
-        isEditing.value = true;
-        todo.value = Utils.deepClone(props.editTodo);
-        todo.value.dueTime = new Date(props.editTodo.dueTime);
-        todo.value.reminderTime = new Date(props.editTodo.reminderTime);
-    }
-});
 
 </script>

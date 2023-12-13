@@ -5,52 +5,64 @@
         class="h-[550px] theme-bg flex-col gap-y-4 items-center justify-between border border-gray-500 rounded-xl p-10 cursor-auto"
     >
 
-        <!-- Current day -->
-        <div class="flex items-center text-4xl theme-text">
-            <p>{{ formattedDate }}</p>
-        </div>
+        <!-- Date picker -->
+        <div>
 
-        <!--Month selector-->
-        <div class="flex items-center justify-between p-2">
-            <button type="button" @click="prevMonth" class="theme-icon" :disabled="prevMonthDisabled"
-                    :class="{'text-gray-500': prevMonthDisabled}">
-                <i class="fa-solid fa-angle-left"></i>
-            </button>
-            <p class="text-lg font-bold">{{ months[currentDate!.getMonth()] }}</p>
-            <button type="button" @click="nextMonth" class="theme-icon" :disabled="nextMonthDisabled"
-                    :class="{'text-gray-500': nextMonthDisabled}">
-                <i class="fa-solid fa-angle-right"></i>
-            </button>
-        </div>
 
-        <!-- Days in current month -->
-        <div class="grid grid-cols-7 text-bold gap-2">
-
-            <!-- Week day names -->
-            <div v-for="weekDay in weekDayNames" class="theme-text text-base flex items-center justify-center">
-                {{ weekDay }}
+            <!-- Current day -->
+            <div class="flex items-center text-4xl theme-text">
+                <p>{{ formattedDate }}</p>
             </div>
 
-            <!-- Days of previous month ( skipped ) -->
-            <div v-for="day in prevMonthDaysToSkip" class="text-gray-500 flex items-center justify-center"></div>
+            <!--Month selector-->
+            <div class="flex items-center justify-between p-2">
+                <button type="button" @click="prevMonth" class="theme-icon" :disabled="prevMonthDisabled"
+                        :class="{'text-gray-500': prevMonthDisabled}">
+                    <i class="fa-solid fa-angle-left"></i>
+                </button>
+                <p class="text-lg font-bold">{{ months[currentDate!.getMonth()] }}</p>
+                <button type="button" @click="nextMonth" class="theme-icon" :disabled="nextMonthDisabled"
+                        :class="{'text-gray-500': nextMonthDisabled}">
+                    <i class="fa-solid fa-angle-right"></i>
+                </button>
+            </div>
 
-            <!-- Days in month -->
-            <button
-                type="button"
-                v-for="(day, index) in daysInCurrentMonth"
-                @click="currentDate = day"
-                :key="index"
-                :class="{'text-gray-500 hover:bg-opacity-10': dateDisabled(day), 'bg-opacity-80': compareDates(day, currentDate) == 0}"
-                :disabled="dateDisabled(day)"
-                class="flex text-sm theme-text justify-center items-center rounded-full w-12 h-12 bg-gray-500 bg-opacity-10 hover:bg-opacity-50"
-            >
-                {{ day.getDate() }}
-            </button>
+            <!-- Days in current month -->
+            <div class="grid grid-cols-7 text-bold gap-2">
 
-            <!-- Days of the next month ( skipped ) -->
-            <div v-for="day in nextMonthDaysToSkip" class="text-gray-500 flex items-center justify-center"></div>
+                <!-- Week day names -->
+                <div v-for="weekDay in weekDayNames" class="theme-text text-base flex items-center justify-center">
+                    {{ weekDay }}
+                </div>
 
+                <!-- Days of previous month ( skipped ) -->
+                <div v-for="day in prevMonthDaysToSkip" class="text-gray-500 flex items-center justify-center"></div>
+
+                <!-- Days in month -->
+                <button
+                    type="button"
+                    v-for="(day, index) in daysInCurrentMonth"
+                    @click="currentDate = day"
+                    :key="index"
+                    :class="{'text-gray-500 hover:bg-opacity-10': dateDisabled(day), 'bg-opacity-80': compareDates(day, currentDate) == 0}"
+                    :disabled="dateDisabled(day)"
+                    class="flex text-sm theme-text justify-center items-center rounded-full w-12 h-12 bg-gray-500 bg-opacity-10 hover:bg-opacity-50"
+                >
+                    {{ day.getDate() }}
+                </button>
+
+                <!-- Days of the next month ( skipped ) -->
+                <div v-for="day in nextMonthDaysToSkip" class="text-gray-500 flex items-center justify-center"></div>
+
+            </div>
         </div>
+
+        <!-- Time picker -->
+        <div>
+            
+        </div>
+
+
     </div>
 </template>
 

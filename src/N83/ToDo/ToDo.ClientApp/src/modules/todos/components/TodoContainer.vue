@@ -2,11 +2,11 @@
 
     <div class="h-full w-full p-20 flex flex-col gap-y-20 px-[20%] items-center justify-center">
 
-        <!-- Todo list -->
+        <!-- Task list -->
         <todo-list :todos="todos" @editTodo="onEditTodo"/>
 
-        <!-- New todo form -->
-        <new-todo-form @addNewTodo="onAddTodo" :editTodo="editTodo" />
+        <!-- New task form -->
+        <new-todo-form @addNewTodo="onAddTodo" :editTodo="editTodo"/>
 
     </div>
 
@@ -16,13 +16,13 @@
 
 import TodoList from "@/modules/todos/components/TodoList.vue";
 import NewTodoForm from "@/modules/todos/components/TodoForm.vue";
-import type { ToDoItem } from "@/modules/todos/models/ToDoItem";
+import { ToDoItem } from "@/modules/todos/models/ToDoItem";
 import { TodoApiClient } from "@/infrastructure/apiClients/airBnbApiClient/brokers/TodoApiClient";
 import { onBeforeMount, ref } from "vue";
 import type { Guid } from "guid-typescript";
 
 const todoApiClient = new TodoApiClient();
-const todos = ref<ToDoItem[]>([]);
+const todos = ref<Array<ToDoItem>>([]);
 const editTodo = ref<ToDoItem | null>(null);
 
 onBeforeMount(async () => {
@@ -37,7 +37,9 @@ const loadTodosAsync = async () => {
 }
 
 const onAddTodo = (todo: ToDoItem) => {
-    todos.value.push(todo);
+    const index = todos.value.findIndex((t: ToDoItem) => t.dueTime > todo.dueTime && !t.isDone);
+    if (index !== -1) todos.value.splice(index, 0, todo);
+    else todos.value.unshift(todo);
 }
 
 const onEditTodo = (id: Guid) => {

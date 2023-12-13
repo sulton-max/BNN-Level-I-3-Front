@@ -1,14 +1,14 @@
 <template>
 
     <div class="flex flex-col gap-4 w-full h-[800px] overflow-x-scroll no-scrollbar">
-        <todo-card v-for="todo in todos" :todo="todo" :key="todo.id.toString" @editTodo="onEditTodo"
-                   @deleteTodo="onDeleteTodo"/>
+        <todo-card v-for="todo in todos" :key="todo.id.toString" :todo="todo" @editTodo="onEditTodo" @deleteTodo="onDeleteTodo"/>
     </div>
 
 </template>
 
 <script setup lang="ts">
 
+import { defineProps, defineEmits } from "vue";
 import TodoCard from "@/modules/todos/components/TodoCard.vue";
 import type { ToDoItem } from "@/modules/todos/models/ToDoItem";
 import type { PropType } from "vue";
@@ -22,9 +22,8 @@ const props = defineProps({
 });
 
 const emit = defineEmits<{
-    editTodo: [todo: ToDoItem],
+    editTodo: [id: Guid],
 }>();
-
 
 const onEditTodo = (id: Guid) => {
     emit("editTodo", id);

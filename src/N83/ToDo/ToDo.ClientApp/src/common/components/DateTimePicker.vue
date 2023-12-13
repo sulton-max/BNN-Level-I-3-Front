@@ -2,26 +2,27 @@
     <div
         tabindex="0" ref="container"
         @focusout="onClose"
-        class="h-[550px] theme-bg flex-col gap-y-4 items-center justify-between border border-gray-500 rounded-xl p-10 cursor-auto"
+        class="h-[690px] theme-bg flex-col gap-y-4 items-center justify-between border border-gray-500 rounded-xl p-10 px-12 cursor-auto"
     >
 
         <!-- Date picker -->
         <div>
-
 
             <!-- Current day -->
             <div class="flex items-center text-4xl theme-text">
                 <p>{{ formattedDate }}</p>
             </div>
 
+            <h5 class="text-sm theme-text my-2 pl-2">Select date</h5>
+
             <!--Month selector-->
             <div class="flex items-center justify-between p-2">
-                <button type="button" @click="prevMonth" class="theme-icon" :disabled="prevMonthDisabled"
+                <button type="button" @click="onSetPrevMonth" class="theme-icon" :disabled="prevMonthDisabled"
                         :class="{'text-gray-500': prevMonthDisabled}">
                     <i class="fa-solid fa-angle-left"></i>
                 </button>
-                <p class="text-lg font-bold">{{ months[currentDate!.getMonth()] }}</p>
-                <button type="button" @click="nextMonth" class="theme-icon" :disabled="nextMonthDisabled"
+                <p class="text-lg font-bold">{{ months[selectedTime!.getMonth()] }}</p>
+                <button type="button" @click="onSetNextMonth" class="theme-icon" :disabled="nextMonthDisabled"
                         :class="{'text-gray-500': nextMonthDisabled}">
                     <i class="fa-solid fa-angle-right"></i>
                 </button>
@@ -40,35 +41,77 @@
 
                 <!-- Days in month -->
                 <button
-                    type="button"
-                    v-for="(day, index) in daysInCurrentMonth"
-                    @click="currentDate = day"
-                    :key="index"
-                    :class="{'text-gray-500 hover:bg-opacity-10': dateDisabled(day), 'bg-opacity-80': compareDates(day, currentDate) == 0}"
-                    :disabled="dateDisabled(day)"
+                    v-for="(day, index) in daysInCurrentMonth" :key="index"
+                    type="button" @click="onSetDate(day)" :disabled="dateDisabled(day)"
+                    :class="{'text-gray-500 hover:bg-opacity-10': dateDisabled(day), 'bg-opacity-80': dateCalculatorService.compareDates(day, selectedTime) == 0}"
                     class="flex text-sm theme-text justify-center items-center rounded-full w-12 h-12 bg-gray-500 bg-opacity-10 hover:bg-opacity-50"
                 >
                     {{ day.getDate() }}
                 </button>
 
                 <!-- Days of the next month ( skipped ) -->
-                <div v-for="day in nextMonthDaysToSkip" class="text-gray-500 flex items-center justify-center"></div>
+                <div v-for="day in nextMonthDaysToSkip" class="text-gray-500 flex items-center justify-center">
+                </div>
 
             </div>
         </div>
 
-        <!-- Time picker -->
-        <div>
-            
+        <div class="mt-5 flex flex-col space-y-5">
+
+            <!-- Select Time -->
+            <h5 class="text-sm theme-text my-2 pl-2">Select time</h5>
+
+            <!-- Hour and Minute Inputs -->
+            <div class="flex gap-x-4 items-center justify-center">
+
+                <!-- Hours Input -->
+                <div class="relative">
+                    <input type="text" :disabled="true" :value="selectedTime.getHours()"
+                           class="input theme-border w-[100px] h-14 outline-none text-3xl text-center">
+                    <button type="button" class="absolute top-2 right-2 theme-icon btn-hover"
+                            :disabled="nextHourDisabled" @click="onSetNextHour" :class="{'text-gray-500': nextHourDisabled}">
+                        <i class="fa-solid fa-angle-up "/>
+                    </button>
+                    <button type="button" class="absolute bottom-1 right-2 theme-icon btn-hover" @click="onSetPrevHour"
+                            :disabled="prevHourDisabled" :class="{'text-gray-500': prevHourDisabled}">
+                        <i class="fa-solid fa-angle-down"/>
+                    </button>
+                </div>
+
+                <!-- Minutes Input -->
+                <div class="relative">
+                    <input type="text" :disabled="true"
+                           class="input theme-border w-[100px] h-14 outline-none text-3xl text-center"
+                           :value="selectedTime.getMinutes()"/>
+                    <button type="button" class="absolute top-2 right-2 theme-icon btn-hover"
+                            :disabled="nextMinuteDisabled" @click="onSetNextMinute" :class="{'text-gray-500': nextMinuteDisabled}">
+                        <i class="fa-solid fa-angle-up "/>
+                    </button>
+                    <button type="button" class="absolute bottom-1 right-2 theme-icon btn-hover"
+                            :disabled="prevMinuteDisabled" @click="onSetPrevMinute" :class="{'text-gray-500': prevMinuteDisabled}">
+                        <i class="fa-solid fa-angle-down"/>
+                    </button>
+                </div>
+
+            </div>
+
         </div>
 
-
     </div>
+
 </template>
 
 <script setup lang="ts">
 
-import { computed, nextTick, onBeforeMount, onMounted, ref, watch } from "vue";
+import { computed, nextTick, onMounted, reactive, ref, watch } from "vue";
+import { DateTimeFormatterService } from "@/infrastructure/services/DateCalculatorService";
+
+const container = ref<HTMLElement>();
+const dateCalculatorService = new DateTimeFormatterService();
+const weekDayNames = ["S", "M", "T", "W", "T", "F", "S"];
+const months = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
+
+/* region Props and Emits */
 
 const props = defineProps({
     modelValue: {
@@ -85,12 +128,11 @@ const props = defineProps({
     }
 });
 
-const container = ref<HTMLElement>();
-
 const emit = defineEmits(['update:modelValue', 'onClose']);
 
-const weekDayNames = ["S", "M", "T", "W", "T", "F", "S"];
-const months = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
+/* endregion */
+
+/* region Hooks */
 
 onMounted(async () => {
     await nextTick(() => {
@@ -98,7 +140,58 @@ onMounted(async () => {
     });
 });
 
-const currentDate = computed({
+/* endregion */
+
+/* region Watchers and Computed props */
+
+watch(() => props.modelValue, () => {
+
+    // currentDate.value = props.modelValue;
+});
+
+const prevMonthDisabled = computed(() => props.minDate
+    && (selectedTime.value.getMonth() === props.minDate.getMonth() && selectedTime.value.getFullYear() === props.minDate.getFullYear()));
+
+const nextMonthDisabled = computed(() => props.maxDate
+    && (selectedTime.value.getMonth() === props.maxDate.getMonth() && selectedTime.value.getFullYear() === props.maxDate.getFullYear()));
+
+const prevHourDisabled = computed(() => {
+    if (!props.minDate) return false;
+    const time = new Date(selectedTime.value?.toString());
+    time.setHours(time.getHours() - 1);
+    return time < props.minDate;
+});
+
+const nextHourDisabled = computed(() => {
+    if (!props.maxDate) return false;
+
+    const time = new Date(selectedTime.value?.toString());
+    time.setHours(time.getHours() + 1);
+    return time > props.maxDate;
+});
+
+const prevMinuteDisabled = computed(() => {
+    if (!props.minDate) return false;
+    const time = new Date(selectedTime.value?.toString());
+    time.setMinutes(time.getMinutes() - 1);
+    return time < props.minDate;
+});
+
+const nextMinuteDisabled = computed(() => {
+    if (!props.maxDate) return false;
+
+    const time = new Date(selectedTime.value?.toString());
+    time.setMinutes(time.getMinutes() + 1);
+    return time > props.maxDate;
+});
+
+const prevMonthDaysToSkip = computed(() => dateCalculatorService.getPrevMonthLastDays(selectedTime.value));
+
+const nextMonthDaysToSkip = computed(() => dateCalculatorService.getNextMonthFirstDays(selectedTime.value));
+
+const formattedDate = computed(() => dateCalculatorService.formattedDate(selectedTime.value));
+
+const selectedTime = computed({
     get() {
         return props.modelValue;
     },
@@ -107,64 +200,64 @@ const currentDate = computed({
     }
 });
 
+const daysInCurrentMonth = computed(() => dateCalculatorService.getMonthDaysAsDate(selectedTime.value));
+
+/* endregion */
+
+/* region Event handlers */
+
 const onClose = () => {
     setTimeout(() => {
         const innerElementFocused = container.value!.contains(document.activeElement);
         if (!innerElementFocused)
             emit('onClose');
-    }, 100);
+    }, 50);
 }
 
-const daysInCurrentMonth = computed(() => {
-    const year = currentDate.value.getFullYear();
-    const month = currentDate.value.getMonth();
-    const daysInMonth = new Date(year, month + 1, 0).getDate();
+const onSetNextMonth = () => selectedTime.value = dateCalculatorService.getNextMonth(selectedTime.value);
 
-    return Array.from({length: daysInMonth}, (_, i) => new Date(year, month, i + 1));
-});
+const onSetPrevMonth = () => selectedTime.value = dateCalculatorService.getPreviousMonth(selectedTime.value);
 
-const prevMonthDaysToSkip = computed(() => {
-    const firstDayOfTheMonth = new Date(currentDate.value.getFullYear(), currentDate.value.getMonth()).getDay();
-    return Array.from({length: firstDayOfTheMonth}, (_, i) => i);
-});
+const onSetNextHour = () => {
+    selectedTime.value?.setHours(selectedTime.value?.getHours() + 1);
+    selectedTime.value = new Date(selectedTime.value?.toString());
+}
 
-const nextMonthDaysToSkip = computed(() => {
-    const lastDayOfTheMonth = new Date(currentDate.value.getFullYear(), currentDate.value.getMonth() + 1, 0).getDay();
-    return Array.from({length: 6 - lastDayOfTheMonth}, (_, i) => i);
-});
+const onSetPrevHour = () => {
+    selectedTime.value?.setHours(selectedTime.value?.getHours() - 1);
+    selectedTime.value = new Date(selectedTime.value?.toString());
+}
 
-const formattedDate = computed(() => {
-    const dayShort = currentDate.value.toLocaleString("en-US", {weekday: 'short'});
-    const monthShort = currentDate.value.toLocaleString("en-US", {month: 'short'});
-    const day = currentDate.value.toLocaleString("en-US", {day: '2-digit'});
-    const year = currentDate.value.toLocaleString("en-US", {year: 'numeric'});
+const onSetNextMinute = () => {
+    selectedTime.value?.setMinutes(selectedTime.value?.getMinutes() + 1);
+    selectedTime.value = new Date(selectedTime.value?.toString());
+}
 
-    return `${dayShort}, ${monthShort} ${day}, ${year}`;
-});
+const onSetPrevMinute = () => {
+    selectedTime.value?.setMinutes(selectedTime.value?.getMinutes() - 1);
+    selectedTime.value = new Date(selectedTime.value?.toString());
+}
 
-const dateDisabled = (date: Date) =>
-    (props.minDate && (compareDates(date, props.minDate) === -1)
-        || (props.maxDate && compareDates(date, props.maxDate) === 1));
-
-const compareDates = (date1: Date, date2: Date): -1 | 0 | 1 => {
-    const d1 = new Date(date1.getFullYear(), date1.getMonth(), date1.getDate());
-    const d2 = new Date(date2.getFullYear(), date2.getMonth(), date2.getDate());
-
-    if (d1 < d2) {
-        return -1;
-    } else if (d1 > d2) {
-        return 1;
-    } else {
-        return 0;
+const onSetDate = (date: Date) => {
+    if (props.minDate && date < props.minDate)
+        selectedTime.value = props.minDate;
+    else if (props.maxDate && date > props.maxDate)
+        selectedTime.value = props.maxDate;
+    else {
+        date.setHours(selectedTime.value.getHours());
+        date.setMinutes(selectedTime.value.getMinutes());
+        selectedTime.value = new Date(date.toString());
     }
 }
 
-const prevMonthDisabled = computed(() => props.minDate && (currentDate.value.getMonth() === props.minDate.getMonth() && currentDate.value.getFullYear() === props.minDate.getFullYear()));
+/* endregion */
 
-const nextMonthDisabled = computed(() => props.maxDate && (currentDate.value.getMonth() === props.maxDate.getMonth() && currentDate.value.getFullYear() === props.maxDate.getFullYear()));
+/* region Methods */
 
-const nextMonth = () => currentDate.value = new Date(currentDate.value.getFullYear(), currentDate.value.getMonth() + 1, currentDate.value.getDate());
+const dateDisabled = (date: Date) =>
+    (props.minDate && (dateCalculatorService.compareDates(date, props.minDate) === -1)
+        || (props.maxDate && dateCalculatorService.compareDates(date, props.maxDate) === 1));
 
-const prevMonth = () => currentDate.value = new Date(currentDate.value.getFullYear(), currentDate.value.getMonth() - 1, currentDate.value.getDate());
+/* endregion */
 
 </script>

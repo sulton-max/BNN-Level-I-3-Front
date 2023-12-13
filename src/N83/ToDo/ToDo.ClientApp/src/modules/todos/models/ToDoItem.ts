@@ -1,5 +1,4 @@
 import type { Guid } from "guid-typescript";
-
 export class ToDoItem {
     id!: Guid;
     title!: string;
@@ -7,7 +6,6 @@ export class ToDoItem {
     isFavorite!: boolean;
     dueTime!: Date;
     reminderTime!: Date;
-
     constructor() {
         this.isDone = false;
         this.isFavorite = false;

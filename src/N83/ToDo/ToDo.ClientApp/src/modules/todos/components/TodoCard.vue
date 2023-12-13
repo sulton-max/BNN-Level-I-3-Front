@@ -17,14 +17,14 @@
         <div class="flex-grow">
             <h5 class="font-bold line-clamp-1">{{ todo.title }}</h5>
             <div class="flex gap-2 text-sm">
-                <p class="opacity-80" :class="{ 'text-red-500': isOverdue }">
-                    <i class="fa-regular fa-calendar theme-icon mr-1" :class="{ 'text-red-500': isOverdue }"/>
-                    {{ DateFormatter.formatHumanize(todo.dueTime) }}
+                <p class="opacity-80" :class="{ 'text-red-500': !todo.isDone && isOverdue }">
+                    <i class="fa-regular fa-calendar theme-icon mr-1" :class="{ 'text-red-500': !todo.isDone && isOverdue }"/>
+                    {{ dateFormatter.formatHumanize(todo.dueTime) }}
                 </p>
                 <span class="opacity-40">•</span>
                 <p class="opacity-40">
                     <i class="fa-regular fa-bell theme-icon mr-1"></i>
-                    {{ DateFormatter.formatHumanize(todo.reminderTime) }}
+                    {{ dateFormatter.formatHumanize(todo.reminderTime) }}
                 </p>
             </div>
         </div>
@@ -55,14 +55,15 @@
 
 <script setup lang="ts">
 
-import { computed, ref } from "vue";
+import { computed } from "vue";
 import { ToDoItem } from "@/modules/todos/models/ToDoItem";
-import { DateFormatter } from "@/infrastructure/services/DateFormatter";
 import { TodoApiClient } from "@/infrastructure/apiClients/airBnbApiClient/brokers/TodoApiClient";
+import { DateTimeFormatterService } from "@/infrastructure/services/DateCalculatorService";
 import { Utils } from "@/infrastructure/extensions/ObjectExtensions";
 import type { Guid } from "guid-typescript";
 
 const todoApiClient = new TodoApiClient();
+const dateFormatter = new DateTimeFormatterService();
 
 const props = defineProps({
     todo: {

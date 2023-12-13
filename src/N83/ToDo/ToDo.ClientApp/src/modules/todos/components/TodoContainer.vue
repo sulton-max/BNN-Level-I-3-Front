@@ -3,10 +3,10 @@
     <div class="h-full w-full p-20 flex flex-col gap-y-20 px-[20%] items-center justify-center">
 
         <!-- Task list -->
-        <todo-list :todos="todos" @editTodo="onEditTodo"/>
+        <todo-list :todos="todos as ToDoItem[]" @editTodo="onEditTodo"/>
 
         <!-- New task form -->
-        <new-todo-form @addNewTodo="onAddTodo" :editTodo="editTodo"/>
+        <new-todo-form @addNewTodo="onAddTodo" :editTodo="editTodo as ToDoItem"/>
 
     </div>
 
@@ -37,7 +37,7 @@ const loadTodosAsync = async () => {
 }
 
 const onAddTodo = (todo: ToDoItem) => {
-    const index = todos.value.findIndex((t: ToDoItem) => t.dueTime > todo.dueTime && !t.isDone);
+    const index = todos.value.findIndex(element => element.dueTime > todo.dueTime && !element.isDone);
     if (index !== -1) todos.value.splice(index, 0, todo);
     else todos.value.unshift(todo);
 }

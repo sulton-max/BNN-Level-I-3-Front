@@ -25,7 +25,7 @@
     }
 
     .theme-border {
-        @apply border-borderColor dark:border-borderColorDark;
+        @apply border border-borderColor dark:border-borderColorDark;
     }
 
     .simple-hover {
@@ -33,7 +33,7 @@
     }
 
     .input {
-        @apply block mt-1 w-full px-3 py-2 rounded-lg text-sm placeholder-slate-400 placeholder-opacity-60 bg-transparent;
+        @apply block mt-1 w-full px-3 py-2 rounded-lg text-sm placeholder-slate-400 placeholder-opacity-60 bg-transparent focus:outline-none focus:border-sky-500 contrast-less:border-slate-300 text-slate-300;
     }
 
     .btn-hover {

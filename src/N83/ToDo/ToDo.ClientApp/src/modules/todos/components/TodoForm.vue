@@ -6,7 +6,7 @@
             <!-- Title input -->
             <div class="flex-grow">
                 <input type="text" placeholder="Add task" v-model="todo.title"
-                       class="input text-lg focus:outline-none focus:border-sky-500 contrast-less:border-slate-300 text-slate-300">
+                       class="input text-lg">
             </div>
 
             <div class="flex gap-x-4">
@@ -101,8 +101,6 @@ const submitAsync = async () => {
 const resetForm = () => todo.value = new ToDoItem();
 
 const createTodoAsync = async () => {
-    console.log(todo.value);
-
     const response = await todoApiClient.todos.createAsync(todo.value);
 
     if (response.isSuccess) emit("addNewTodo", response.response!)

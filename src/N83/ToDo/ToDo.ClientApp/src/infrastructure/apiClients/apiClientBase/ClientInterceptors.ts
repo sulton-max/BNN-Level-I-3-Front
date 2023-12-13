@@ -8,13 +8,6 @@ export class ClientInterceptors {
 
     public static registerResponseConverter(client: AxiosInstance) {
         client.interceptors.response.use(<TResponse extends IMappable<TResponse>>(response: AxiosResponse<TResponse>) => {
-                // Extract the data type from the response
-                // const data: TResponse = response.data as TResponse;
-
-                // Call mapFrom on the data
-                // const mappedData = data.mapFrom(data);
-                // console.log(typeof mappedData.dueDate);
-
                 return {
                     ...response,
                     data: new ApiResponse(response.data as TResponse, null, response.status)
